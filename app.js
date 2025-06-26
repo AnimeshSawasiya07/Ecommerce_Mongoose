@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_DB_URL).then(() => {
     app.use("/user",userRouter)
 
 
-    app.listen(process.env.PORT || 3000, () => {
+    app.listen(process.env.PORT, () => {
         console.log("Server Started...");
     })
 }).catch(err => {
