@@ -112,7 +112,7 @@ const sendEmail = (name, email, token) => {
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
-          <form method="POST" action="http://localhost:3000/user/verification">
+          <form method="POST" action="http://ecommerce-mongoose.onrender.com/user/verification">
             <input type="hidden" name="token" value="${token}" />
             <button style="
               background-color: #00b894;
