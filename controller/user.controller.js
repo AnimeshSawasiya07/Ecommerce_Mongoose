@@ -8,6 +8,7 @@ dotenv.config()
 
 export const signUp = async (req, res, next) => {
   //console.log("req received");
+  //console.log("req received");
   let { name, email, password, contact } = req.body
   try {
     let errors = validationResult(req);
