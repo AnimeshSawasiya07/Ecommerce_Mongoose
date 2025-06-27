@@ -65,7 +65,7 @@ export const signIn = async (req, res, next) => {
 
 export const verifyAccount = async (req, res, next) => {
   try {
-    let { token } = req.body
+    let { token } = req.query
     // let result =await User.updateOne({email},{$set:{isVerified:true}})
     // return res.status(200).json({message :"Account Verified Successfully"});
 
@@ -88,66 +88,136 @@ export const verifyAccount = async (req, res, next) => {
   }
 }
 
+// const sendEmail = (name, email, token) => {
+//   return new Promise((resolve, reject) => {
+//     let transporter = nodemailer.createTransport({
+//       service: 'gmail',
+//       auth: {
+//         user: process.env.EMAIL,
+//         pass: process.env.EMAIL_PASSWORD
+//       }
+//     })
+//     let mailOptions = {
+//       from: process.env.EMAIL,
+//       to: email,
+//       subject: '🎉 Almost There! Just Verify Your Account',
+//       html: `
+//     <div style="font-family: 'Segoe UI', sans-serif; background-color: #f9f9f9; padding: 30px;">
+//       <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        
+//         <div style="text-align: center;">
+//           <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Mail Icon" width="80" />
+//           <h2 style="color: #333;">Verify Your Email Address</h2>
+//           <p style="font-size: 15px; color: #555;">Hi <strong>${name}</strong>, you're almost ready to get started! Just click the button below to verify your email and activate your account.</p>
+//         </div>
+
+//         <div style="text-align: center; margin: 30px 0;">
+//           <form method="POST" action="http://ecommerce-mongoose.onrender.com/user/verification">
+//             <input type="hidden" name="token" value="${token}" />
+//             <button style="
+//               background-color: #00b894;
+//               color: #ffffff;
+//               padding: 14px 30px;
+//               font-size: 16px;
+//               border: none;
+//               border-radius: 8px;
+//               cursor: pointer;
+//               transition: background 0.3s ease;
+//             " onmouseover="this.style.backgroundColor='#019875'">
+//               ✅ Verify My Account
+//             </button>
+//           </form>
+//         </div>
+
+//         <p style="text-align: center; font-size: 14px; color: #999;">
+//           ⏳ This link is valid for <strong>10 minutes</strong> only. If it expires, you can sign up again to get a new one.
+//         </p>
+
+//         <p style="text-align: center; font-size: 13px; color: #ccc; margin-top: 40px;">
+//           Didn’t request this email? No worries. Just ignore it. 👍
+//         </p>
+
+//         <hr style="margin-top: 40px; border: none; border-top: 1px solid #eee;" />
+
+//         <p style="text-align: center; font-size: 13px; color: #aaa;">
+//           © 2025 Backend API Team. All rights reserved.
+//         </p>
+//       </div>
+//     </div>
+//   `
+//     };
+
+
+
+//     transporter.sendMail(mailOptions, function (error, info) {
+//       if (error) {
+//         reject(error);
+//       } else {
+//         resolve();
+//       }
+//     });
+
+//   })
+// }
+
 const sendEmail = (name, email, token) => {
   return new Promise((resolve, reject) => {
+    const verificationLink = `https://ecommerce-mongoose.onrender.com/user/verification?token=${token}`;
+
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASSWORD
       }
-    })
-    let mailOptions = {
+    });
+
+    const mailOptions = {
       from: process.env.EMAIL,
       to: email,
       subject: '🎉 Almost There! Just Verify Your Account',
       html: `
-    <div style="font-family: 'Segoe UI', sans-serif; background-color: #f9f9f9; padding: 30px;">
-      <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        
-        <div style="text-align: center;">
-          <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Mail Icon" width="80" />
-          <h2 style="color: #333;">Verify Your Email Address</h2>
-          <p style="font-size: 15px; color: #555;">Hi <strong>${name}</strong>, you're almost ready to get started! Just click the button below to verify your email and activate your account.</p>
+        <div style="font-family: 'Segoe UI', sans-serif; background-color: #f9f9f9; padding: 30px;">
+          <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+
+            <div style="text-align: center;">
+              <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Mail Icon" width="80" />
+              <h2 style="color: #333;">Verify Your Email Address</h2>
+              <p style="font-size: 15px; color: #555;">Hi <strong>${name}</strong>, you're almost ready to get started! Just click the button below to verify your email and activate your account.</p>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${verificationLink}" style="
+                display: inline-block;
+                background-color: #00b894;
+                color: #ffffff;
+                padding: 14px 30px;
+                font-size: 16px;
+                border-radius: 8px;
+                text-decoration: none;
+                transition: background 0.3s ease;
+              " target="_blank">
+                ✅ Verify My Account
+              </a>
+            </div>
+
+            <p style="text-align: center; font-size: 14px; color: #999;">
+              ⏳ This link is valid for <strong>10 minutes</strong> only. If it expires, you can sign up again to get a new one.
+            </p>
+
+            <p style="text-align: center; font-size: 13px; color: #ccc; margin-top: 40px;">
+              Didn’t request this email? No worries. Just ignore it. 👍
+            </p>
+
+            <hr style="margin-top: 40px; border: none; border-top: 1px solid #eee;" />
+
+            <p style="text-align: center; font-size: 13px; color: #aaa;">
+              © 2025 Backend API Team. All rights reserved.
+            </p>
+          </div>
         </div>
-
-        <div style="text-align: center; margin: 30px 0;">
-          <form method="POST" action="http://ecommerce-mongoose.onrender.com/user/verification">
-            <input type="hidden" name="token" value="${token}" />
-            <button style="
-              background-color: #00b894;
-              color: #ffffff;
-              padding: 14px 30px;
-              font-size: 16px;
-              border: none;
-              border-radius: 8px;
-              cursor: pointer;
-              transition: background 0.3s ease;
-            " onmouseover="this.style.backgroundColor='#019875'">
-              ✅ Verify My Account
-            </button>
-          </form>
-        </div>
-
-        <p style="text-align: center; font-size: 14px; color: #999;">
-          ⏳ This link is valid for <strong>10 minutes</strong> only. If it expires, you can sign up again to get a new one.
-        </p>
-
-        <p style="text-align: center; font-size: 13px; color: #ccc; margin-top: 40px;">
-          Didn’t request this email? No worries. Just ignore it. 👍
-        </p>
-
-        <hr style="margin-top: 40px; border: none; border-top: 1px solid #eee;" />
-
-        <p style="text-align: center; font-size: 13px; color: #aaa;">
-          © 2025 Backend API Team. All rights reserved.
-        </p>
-      </div>
-    </div>
-  `
+      `
     };
-
-
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -156,9 +226,9 @@ const sendEmail = (name, email, token) => {
         resolve();
       }
     });
+  });
+};
 
-  })
-}
 
 function generateUserToken(name, email, password, contact) {
   let payload = { name, email, password, contact }

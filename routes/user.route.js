@@ -14,7 +14,7 @@ body("contact","contact is required").notEmpty(),
 body("contact","contact must only contain digit").isNumeric()
 ,signUp)
 
-router.post("/verification",verifyAccount)
+router.get("/verification",verifyAccount)
 router.post("/sign-in",signIn)
 
 export default router;
